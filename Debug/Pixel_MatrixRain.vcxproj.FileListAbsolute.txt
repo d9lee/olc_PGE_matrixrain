@@ -1,0 +1,4 @@
+C:\Users\user\source\repos\Pixel_MatrixRain\Debug\Pixel_MatrixRain.exe
+C:\Users\user\source\repos\Pixel_MatrixRain\Debug\Pixel_MatrixRain.pdb
+\\DESKTOP9\Users\user\source\repos\Pixel_MatrixRain\Debug\Pixel_MatrixRain.exe
+C:\Users\lee\Desktop\Pixel_MatrixRain\Debug\Pixel_MatrixRain.exe
