@@ -15,16 +15,20 @@ private:
 	{
 		int nColumn = 0;
 		float fPosition = 0.0f;
+		float fSpeed = 10.0f;
 		std::string sText;
 	};
 
 	void PrepareStreamer(sStreamer *s)
 	{
+		s->nColumn = rand() % ScreenWidth();
+		s->fPosition = 0.0f;
+		s->fSpeed = rand() % 60 + 5;
 		s->sText = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 	}
 
 	std::list<sStreamer> listStreamers;
-	int nMaxStreamers = 1;
+	int nMaxStreamers = 200;
 
 
 public:
@@ -48,14 +52,19 @@ public:
 		for (auto& s : listStreamers)
 		{
 			
-			s.fPosition += 10.0f * fElapsedTime;
+			s.fPosition += s.fSpeed * fElapsedTime;
 
 			for (int i = 0; i < s.sText.size(); i++)
 			{
+				int nCharIndex = (i - (int)s.fPosition) % s.sText.size();
 
-				DrawString(s.nColumn, (int)s.fPosition, s.sText, olc::GREEN);
+				DrawString(s.nColumn, (int)s.fPosition - i * 8, s.sText.substr(nCharIndex, 1) , olc::GREEN);
 
 			}
+
+			if (s.fPosition - s.sText.size()*8 >= ScreenHeight())
+				PrepareStreamer(&s);
+
 		}
 
 		return true;
@@ -65,9 +74,10 @@ public:
 int main()
 {
 	MatrixRain demo;
-	if (demo.Construct(128, 80, 8, 8))
+	if (demo.Construct(820, 420, 2, 2))
 		demo.Start();
 
 	return 0;
 }
+
 
