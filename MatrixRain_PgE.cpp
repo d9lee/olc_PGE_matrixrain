@@ -15,16 +15,32 @@ private:
 	{
 		int nColumn = 0;
 		float fPosition = 0.0f;
+		float fSpeed = 50.0f;
 		std::string sText;
 	};
 
 	void PrepareStreamer(sStreamer *s)
 	{
-		s->sText = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+		s->nColumn = rand() % ScreenWidth();
+		s->fPosition = 0.0f;
+		s->fSpeed = rand() % 150 + 15;
+
+		s->sText.clear();
+
+		int nStreamerLength = rand() % 80 + 10;
+		for (int i = 0; i < nStreamerLength; i++)
+			s->sText.append(1, RandomCharacter());
+
+		//s->sText = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+	}
+
+	wchar_t RandomCharacter()
+	{
+		return (wchar_t)(rand() % 93 + 33);
 	}
 
 	std::list<sStreamer> listStreamers;
-	int nMaxStreamers = 1;
+	int nMaxStreamers = 200;
 
 
 public:
@@ -48,14 +64,28 @@ public:
 		for (auto& s : listStreamers)
 		{
 			
-			s.fPosition += 10.0f * fElapsedTime;
+			s.fPosition += s.fSpeed * fElapsedTime;
 
 			for (int i = 0; i < s.sText.size(); i++)
 			{
+				int nCharIndex = (abs(i - (int)s.fPosition / 8)) % s.sText.size();
 
-				DrawString(s.nColumn, (int)s.fPosition, s.sText, olc::GREEN);
+				if (s.fSpeed < 20.0f)
+					DrawString(s.nColumn, (int)s.fPosition - i * 8, s.sText.substr(nCharIndex, 1), olc::DARK_GREEN);
+				else
+					DrawString(s.nColumn, (int)s.fPosition - i * 8, s.sText.substr(nCharIndex, 1) , olc::GREEN);
+
+				if (i == 0)
+					DrawString(s.nColumn, (int)s.fPosition - i * 8, s.sText.substr(nCharIndex, 1), olc::WHITE);
+				else
+					if (i <= 2)
+						DrawString(s.nColumn, (int)s.fPosition - i * 8, s.sText.substr(nCharIndex, 1), olc::GREY);
 
 			}
+
+			if (s.fPosition - s.sText.size()*8 >= ScreenHeight())
+				PrepareStreamer(&s);
+
 		}
 
 		return true;
@@ -65,7 +95,7 @@ public:
 int main()
 {
 	MatrixRain demo;
-	if (demo.Construct(128, 80, 8, 8))
+	if (demo.Construct(1000, 600, 2, 2))
 		demo.Start();
 
 	return 0;
